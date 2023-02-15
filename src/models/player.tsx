@@ -1,8 +1,9 @@
-import { Nation } from "./nation"
+import { INation } from "./nation"
 
-export interface Player {
-    _id: string
-    name: string
+export interface IPlayer {
+    _id?: string
+    name: string,
+    image: string,
     nationId: string
-    nation?: Nation
+    nation?: INation
 }

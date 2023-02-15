@@ -1,7 +1,8 @@
 import { Player } from "./player"
 
-export interface Nation {
-    _id: string
+export interface INation {
+    _id?: string
     name: string
+    image: string
     players?: Player[]
 }
