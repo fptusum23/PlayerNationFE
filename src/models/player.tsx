@@ -1,9 +1,13 @@
 import { INation } from "./nation"
+import { EPosition } from "./position"
 
 export interface IPlayer {
     _id?: string
     name: string,
     image: string,
-    nationId: string
-    nation?: INation
+    club: string
+    position: EPosition
+    goals: number
+    isCaptain?: boolean
+    nation: string | INation
 }

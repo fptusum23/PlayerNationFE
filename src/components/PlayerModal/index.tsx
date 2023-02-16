@@ -1,32 +1,56 @@
 import { useEffect, useState } from "react";
+import { EAction } from "../../enum/action";
+import { INation } from "../../models/nation";
 import { IPlayer } from "../../models/player";
+import { EPosition } from "../../models/position";
+import { IResponse } from "../../models/reponse";
+import { IResponsePaging } from "../../models/reponsePaging";
+import nationService from "../../services/nationService";
 import playerService from "../../services/playerService";
 
 
 export default function PlayerModal(props: any) {
+    const { playerId, typeModal } = props
     const [inputs, setInputs] = useState<IPlayer>();
-
+    const [nations, setNations] = useState<INation[]>([]);
     useEffect(() => {
-        playerService.getById(props.playerId).then(res => {
+        if (typeModal == EAction.UPDATE) {
+            playerService.getById(playerId).then((res: IResponse<IPlayer | undefined>) => {
+                if (res) {
+                    const { results: { object } } = res;
+                    setInputs(object);
+                }
+            })
+        }
+        nationService.getAll().then((res: IResponsePaging<INation>) => {
             if (res) {
-                setInputs(res)
+                const { results: { objects: { rows } } } = res;
+                setNations(rows);
             }
         })
+
     }, []);
 
     const handleChange = (event: { target: { name: any; value: any; }; }) => {
         const name = `${event.target.name}`;
+
         const value = event.target.value;
+
+        console.log("name ===> ", {
+            name,
+            value
+        })
         setInputs((values: any) => ({ ...values, [name]: value }))
     }
 
     const handleSave = () => {
-        if (inputs) playerService.updateById(props.playerId, inputs)
+        if (inputs && typeModal == EAction.UPDATE) playerService.updateById(playerId, inputs)
+        if (inputs && typeModal == EAction.CREATE) playerService.create(inputs)
         handleCloseModal()
 
     }
     const handleRemove = () => {
-        playerService.deleteById(props.playerId)
+        playerService.deleteById(playerId)
         handleCloseModal()
     }
     const handleCloseModal = () => {
@@ -46,8 +70,8 @@ export default function PlayerModal(props: any) {
 
                                 <div className="text-center sm:mt-0 sm:text-left  w-full">
                                     <div className="mb-6 w-full">
-                                        <label htmlFor="email" className="block mb-2 text-sm font-medium text-blue-800 dark:text-blue-900">Name</label>
-                                        <input type="text" id="email"
+                                        <label htmlFor="name" className="block mb-2 text-sm font-medium text-blue-800 dark:text-blue-900">Name</label>
+                                        <input type="text" id="name"
                                             className="bg-gray-50 border border-blue-300 text-blue-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:border-blue-500 dark:placeholder-gray-400 dark:text-blue-900 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                             name="name"
                                             value={inputs?.name || ""}
@@ -55,12 +79,58 @@ export default function PlayerModal(props: any) {
                                             required />
                                     </div>
                                     <div className="mb-6">
-                                        <label htmlFor="password" className="block mb-2 text-sm font-medium text-blue-800 dark:text-blue-900">Image</label>
-                                        <input type="text" id="password" className="bg-gray-50 border border-blue-300 text-blue-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:border-blue-500 dark:placeholder-gray-400 dark:text-blue-900 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        <label htmlFor="image" className="block mb-2 text-sm font-medium text-blue-800 dark:text-blue-900">Image</label>
+                                        <input type="text" id="image" className="bg-gray-50 border border-blue-300 text-blue-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:border-blue-500 dark:placeholder-gray-400 dark:text-blue-900 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                             name="image"
                                             value={inputs?.image || ""}
                                             onChange={handleChange}
                                             required />
+                                    </div>
+                                    <div className="mb-6">
+                                        <label htmlFor="club" className="block mb-2 text-sm font-medium text-blue-800 dark:text-blue-900">Club</label>
+                                        <input type="text" id="club" className="bg-gray-50 border border-blue-300 text-blue-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:border-blue-500 dark:placeholder-gray-400 dark:text-blue-900 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            name="club"
+                                            value={inputs?.club || ""}
+                                            onChange={handleChange}
+                                            required />
+                                    </div>
+                                    <div className="mb-6">
+                                        <label htmlFor="position" className="block mb-2 text-sm font-medium text-blue-800 dark:text-blue-900">Position</label>
+                                        <select
+                                            onChange={handleChange}
+                                            id="position"
+                                            name="position"
+                                            className="bg-gray-50 border border-blue-300 text-blue-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:border-blue-500 dark:placeholder-gray-400 dark:text-blue-900 dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                            <option >Select...</option>
+                                            {Object.values(EPosition).map(item => {
+                                                return (
+                                                    <option key={item} value={item}>{item}</option>
+                                                )
+                                            })}
+                                        </select>
+                                    </div>
+                                    <div className="mb-6">
+                                        <label htmlFor="goals" className="block mb-2 text-sm font-medium text-blue-800 dark:text-blue-900">Goals</label>
+                                        <input type="number" id="goals" className="bg-gray-50 border border-blue-300 text-blue-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:border-blue-500 dark:placeholder-gray-400 dark:text-blue-900 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            name="goals"
+                                            value={inputs?.goals || ""}
+                                            onChange={handleChange}
+                                            required />
+                                    </div>
+                                    <div className="mb-6">
+                                        <label htmlFor="nation" className="block mb-2 text-sm font-medium text-blue-800 dark:text-blue-900">Nation</label>
+                                        <select
+                                            onChange={handleChange}
+                                            id="nation"
+                                            name="nation"
+                                            className="bg-gray-50 border border-blue-300 text-blue-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:border-blue-500 dark:placeholder-gray-400 dark:text-blue-900 dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                            <option >Select...</option>
+                                            {nations && nations.map(item => {
+                                                return (
+                                                    <option key={item._id} value={item._id}>{item.name}</option>
+                                                )
+                                            })}
+                                        </select>
                                     </div>
 
                                 </div>

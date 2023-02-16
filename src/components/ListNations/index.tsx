@@ -3,18 +3,32 @@ import NationModal from "../NationModal";
 import Nation from "../Nation";
 import nationService from "../../services/nationService";
 import { INation } from "../../models/nation";
+import { IResponsePaging } from "../../models/reponsePaging";
+import { EAction } from "../../enum/action";
 
 
 export default function ListNations() {
   const [openModal, setOpenModal] = useState(false);
+  const [typeModal, setTypeModal] = useState<EAction>();
   const [modalId, setIdModal] = useState(null);
   const [nations, setNations] = useState<INation[]>([]);
   const handleCloseModal = () => {
     setIdModal(null);
-    setOpenModal(false)
+    setOpenModal(false);
+    nationService
+      .getAll()
+      .then((res: IResponsePaging<INation>) => {
+        const { pagination, results: { objects: { rows } } } = res;
+        setNations([...rows])
+      })
   }
-  const handleOpenModal = (data: any) => {
+  const handleOpenModalUpdate = (data: any, action: EAction) => {
+    setTypeModal(EAction.UPDATE)
     setIdModal(data._id);
+    setOpenModal(true)
+  }
+  const handleOpenModalCreate = () => {
+    setTypeModal(EAction.CREATE)
     setOpenModal(true)
   }
 
@@ -22,20 +36,22 @@ export default function ListNations() {
   useEffect(() => {
     nationService
       .getAll()
-      .then((res) => {
-        setNations(res)
+      .then((res: IResponsePaging<INation>) => {
+        const { pagination, results: { objects: { rows } } } = res;
+        setNations([...rows])
       })
-  }, []);
+  }, [openModal, modalId]);
   return (
     <>
+      <div className="px-4 py-3 sm:flex sm:flex-row sm:px-6">
+        <button type="button" className="inline-flex w-full justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm" onClick={handleOpenModalCreate}>Create</button>
+      </div>
       <div className="-m-4 flex flex-wrap">
         {nations.map(item => {
-          return (<Nation key={`nation_${item._id}`} data={item} handleOpenModal={handleOpenModal}></Nation>)
+          return (<Nation key={`nation_${item._id}`} data={item} handleOpenModal={handleOpenModalUpdate}></Nation>)
         })}
-
-
       </div>
-      {openModal && <NationModal handleCloseModal={handleCloseModal} nationId={modalId}></NationModal>}
+      {openModal && <NationModal typeModal={typeModal} handleCloseModal={handleCloseModal} nationId={modalId}></NationModal>}
 
     </>
 

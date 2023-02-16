@@ -12,8 +12,14 @@ export default function Player(props: any) {
             </a>
             <div className="flex justify-between mt-4">
                 <div>
-                    <h3 className="title-font mb-1 text-xs tracking-widest text-gray-500">{data.nation}</h3>
-                    <h2 className="title-font text-lg font-medium text-gray-900">{data.name}</h2>
+                    <div className="flex mt-4">
+                        <div className="relative w-12 h-12">
+                            <img className="rounded-full border border-gray-100 shadow-sm" src={data?.nation?.image} alt="user image" />
+                        </div>
+                        <h3 className="title-font mx-2 mb-1 text-base  font-medium tracking-widest text-gray-600">{data?.position}</h3>
+                    </div>
+
+                    <h2 className="title-font text-lg font-normal text-gray-800">{data.name}</h2>
                     <p className="mt-1">{data.date}</p>
                 </div>
                 <div className="flex flex-col justify-end" >

@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
+import { EAction } from "../../enum/action";
 import { INation } from "../../models/nation";
+import { IResponse } from "../../models/reponse";
 import nationService from "../../services/nationService";
-import utilService from "../../services/utilService";
 
 
 export default function NationModal(props: any) {
-    const [nations, setNation] = useState<INation>();
-
-
+    const { nationId, typeModal } = props
     const [inputs, setInputs] = useState<INation>();
 
     useEffect(() => {
-        nationService.getById(props.nationId).then(res => {
-            if (res) {
-                setNation(res);
-                setInputs(res)
-            }
-        })
+        if (typeModal == EAction.UPDATE)
+            nationService.getById(nationId).then((res: IResponse<INation | undefined>) => {
+                if (res) {
+                    const { results: { object } } = res;
+                    setInputs(object);
+                }
+            })
     }, []);
 
     const handleChange = (event: { target: { name: any; value: any; }; }) => {
@@ -26,12 +26,13 @@ export default function NationModal(props: any) {
     }
 
     const handleSave = () => {
-        if (inputs) nationService.updateById(props.nationId, inputs)
+        if (inputs && typeModal == EAction.UPDATE) nationService.updateById(nationId, inputs)
+        if (inputs && typeModal == EAction.CREATE) nationService.create(inputs)
         handleCloseModal()
 
     }
     const handleRemove = () => {
-        nationService.deleteById(props.nationId)
+        nationService.deleteById(nationId)
         handleCloseModal()
     }
     const handleCloseModal = () => {

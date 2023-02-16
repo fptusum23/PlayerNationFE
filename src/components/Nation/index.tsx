@@ -1,3 +1,4 @@
+import { EAction } from "../../enum/action";
 
 export default function Nation(props: any) {
     const { data } = props;

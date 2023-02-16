@@ -1,8 +1,8 @@
-import { Player } from "./player"
+import { IPlayer } from "./player"
 
 export interface INation {
     _id?: string
     name: string
-    image: string
-    players?: Player[]
+    image?: string
+    players?: IPlayer[]
 }
