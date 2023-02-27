@@ -11,7 +11,11 @@ export default function Nation(props: any) {
                 <a className="relative block h-48 overflow-hidden rounded">
                     <img alt="ecommerce" className="block h-full w-full object-cover object-center cursor-pointer" src={data.image} />
                 </a>
-
+                <div >
+                    <p className="truncate ">
+                        {data.description}
+                    </p>
+                </div>
                 <div className="flex justify-between mt-2">
                     <div>
                         <h2 className="title-font text-lg font-medium text-gray-900">{data.name}</h2>

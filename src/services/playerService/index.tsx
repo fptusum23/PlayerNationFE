@@ -7,6 +7,16 @@ const ROUTE = 'player';
 const playerService = {
     async getAll(): Promise<IResponsePaging<IPlayer>> {
         const url = `${ROUTE}?fields=["$all"]&populates=["nation"]`;
+        const { headers } = await axiosClient.get(url, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'x-requested-with': 'XMLHttpRequest',
+            }
+        })
+
+        console.log("headers ===> ", headers);
+
         return (await axiosClient.get(url)).data;
     },
     async getById(_id: string): Promise<IResponse<IPlayer | undefined>> {

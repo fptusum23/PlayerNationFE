@@ -50,12 +50,16 @@ export default function PlayerModal(props: any) {
 
     }
     const handleRemove = () => {
-        playerService.deleteById(playerId)
+        if (confirm('Are sure?')) {
+            playerService.deleteById(playerId)
+        }
+
         handleCloseModal()
     }
     const handleCloseModal = () => {
         props.handleCloseModal()
     }
+
     return (
         <div className="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true" >
 
@@ -98,13 +102,14 @@ export default function PlayerModal(props: any) {
                                         <label htmlFor="position" className="block mb-2 text-sm font-medium text-blue-800 dark:text-blue-900">Position</label>
                                         <select
                                             onChange={handleChange}
+                                            defaultValue={`${inputs?.nation}`}
                                             id="position"
                                             name="position"
                                             className="bg-gray-50 border border-blue-300 text-blue-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:border-blue-500 dark:placeholder-gray-400 dark:text-blue-900 dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                            <option >Select...</option>
+                                            <option selected>Select...</option>
                                             {Object.values(EPosition).map(item => {
                                                 return (
-                                                    <option key={item} value={item}>{item}</option>
+                                                    <option selected={inputs?.position == item} key={item} value={item} >{item}</option>
                                                 )
                                             })}
                                         </select>
@@ -127,7 +132,7 @@ export default function PlayerModal(props: any) {
                                             <option >Select...</option>
                                             {nations && nations.map(item => {
                                                 return (
-                                                    <option key={item._id} value={item._id}>{item.name}</option>
+                                                    <option selected={inputs?.nation == item._id} key={item._id} value={item._id}>{item.name}</option>
                                                 )
                                             })}
                                         </select>
@@ -137,7 +142,7 @@ export default function PlayerModal(props: any) {
                             </div>
                         </div>
                         <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                            <button type="button" className="inline-flex w-full justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm" onClick={handleRemove}>Remove</button>
+                            {typeModal != EAction.CREATE && <button type="button" className="inline-flex w-full justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm" onClick={handleRemove}>Remove</button>}
                             <button type="button" className="mt-3 inline-flex w-full justify-center rounded-md border border-blue-300 bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" onClick={handleSave}>Save</button>
                             <button type="button" className="mt-3 inline-flex w-full justify-center rounded-md border border-blue-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" onClick={handleCloseModal}>Cancel</button>
                         </div>
