@@ -4,15 +4,18 @@ import { IUser } from "../../models/user";
 import authService from "../../services/authService";
 import utilService from '../../services/utilService'
 import LoginModal from "../LoginModal";
+import RegisterModal from "../RegisterModal";
 interface IMenu {
     title: string,
-    path: string
+    path: string,
+    check?: boolean
 }
 
 
-export default function Navbar() {
-    const [openModal, setOpenModal] = useState(false);
-    const [user, setUser] = useState<IUser>()
+export default function Navbar(props: any) {
+    const [openModalLogin, setOpenModalLogin] = useState(false);
+    const [openModalRegister, setOpenModalRegister] = useState(false);
+    const [user, setUser] = useState<IUser | undefined>()
     const handleOpenMobileMenu = () => {
         const mobileMenu = document.getElementById("mobile-menu");
         mobileMenu?.classList.toggle('hidden')
@@ -25,6 +28,11 @@ export default function Navbar() {
         {
             title: 'Nations',
             path: '/nation'
+        },
+        {
+            title: 'User',
+            path: '/user',
+            check: true
         }
 
     ]
@@ -34,17 +42,29 @@ export default function Navbar() {
     const setUserInfo = () => {
         authService.info().then(res => {
             setUser(res.results.object)
+            props.handleSetUser(res.results.object)
         }).catch(err => {
-            localStorage.clear()
+            localStorage.removeItem('accessToken');
+            props.handleSetUser(undefined)
         })
     }
-    const handleCloseModal = () => {
-        setOpenModal(false);
+    const handleCloseModalLogin = () => {
+        setOpenModalLogin(false);
+    }
+    const handleCloseModalRegister = () => {
+        setOpenModalRegister(false);
     }
     const handleOpenModalLogin = () => {
-        setOpenModal(true)
+        setOpenModalLogin(true)
     }
-    const pathname = window.location.pathname
+    const handleOpenModalRegister = () => {
+        setOpenModalRegister(true)
+    }
+    const handleLogout = () => {
+        localStorage.removeItem('accessToken')
+        setUser(undefined);
+        props.handleSetUser(undefined)
+    }
     return (
         <>
             <nav className="p-2 mb-10 border-gray-200 bg-gray-200">
@@ -62,7 +82,7 @@ export default function Navbar() {
                                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                     <svg className="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"></path></svg>
                                 </div>
-                                <input type="text" id="email-adress-icon" className="block w-full p-2 pl-10 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Search..." />
+                                <input type="text" id="search-adress-icon" className="block w-full p-2 pl-10 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Search..." />
                             </div>
                             <button onClick={handleOpenMobileMenu} type="button" className="inline-flex items-center justify-center text-gray-400 rounded-lg md:hidden hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-300" aria-expanded="false">
                                 <span className="sr-only">Open main menu</span>
@@ -75,15 +95,16 @@ export default function Navbar() {
 
                         <div className="border w-fit rounded-xl mx-6  shadow-sm">
                             {user ?
-                                <>
-                                    <div className="px-4 py-2 rounded-l-xl">
+                                <div className="flex ">
+                                    <div className="px-4 py-2 rounded-xl">
                                         {user.name}
                                     </div>
-                                </>
+                                    <button className="px-4 py-2 rounded-xl text-white m-0 bg-red-500 hover:bg-red-600 transition" onClick={handleLogout}>Logout</button>
+                                </div>
                                 :
                                 <>
                                     <button className="px-4 py-2 rounded-l-xl text-white m-0 bg-blue-500 hover:bg-blue-600 transition" onClick={handleOpenModalLogin}>Login</button>
-                                    <button className="px-4 py-2 rounded-r-xl bg-neutral-50 hover:bg-neutral-100 transition">Register</button>
+                                    <button className="px-4 py-2 rounded-r-xl bg-neutral-50 hover:bg-neutral-100 transition" onClick={handleOpenModalRegister}>Register</button>
                                 </>
                             }
                         </div>
@@ -94,7 +115,11 @@ export default function Navbar() {
                         <ul className="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium">
                             {
                                 listMenu.map((item: IMenu) => {
-                                    const isCurrentPage = utilService.checkSamePath(item.path, pathname)
+
+                                    const isCurrentPage = utilService.checkSamePath(item.path, window.location.pathname);
+                                    if (item.check && !user || item.check && user?.role != "ADMIN") {
+                                        return (<></>)
+                                    }
                                     return (
                                         <li key={item.title}>
                                             <Link to={item.path}
@@ -112,7 +137,9 @@ export default function Navbar() {
 
                 </div>
             </nav >
-            {openModal && <LoginModal handleCloseModal={handleCloseModal} setUserInfo={setUserInfo}></LoginModal>}
+            {openModalLogin && <LoginModal handleCloseModal={handleCloseModalLogin} setUserInfo={setUserInfo}></LoginModal>}
+            {openModalRegister && <RegisterModal handleCloseModal={handleCloseModalRegister} setUserInfo={setUserInfo}></RegisterModal>}
+
         </>
     )
 }

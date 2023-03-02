@@ -22,9 +22,12 @@ export default function Player(props: any) {
                     <h2 className="title-font text-lg font-normal text-gray-800">{data.name}</h2>
                     <p className="mt-1">{data.date}</p>
                 </div>
-                <div className="flex flex-col justify-end" >
-                    <button data-modal-target={`nationModal${data.id}}`} data-modal-toggle={`nationModal${data.id}}`} type="button" onClick={handleOpenModal} className="align-bottom inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Modify</button>
-                </div>
+                {
+                    props.user &&
+                    <div className="flex flex-col justify-end" >
+                        <button data-modal-target={`nationModal${data.id}}`} data-modal-toggle={`nationModal${data.id}}`} type="button" onClick={handleOpenModal} className="align-bottom inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Modify</button>
+                    </div>
+                }
             </div>
         </div>
 

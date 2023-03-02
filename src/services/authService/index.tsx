@@ -10,6 +10,10 @@ const authService = {
         const url = `${ROUTE}/login?fields=["$all"]`;
         return (await axiosClient.post(url, body)).data;
     },
+    async register(body: ILogin): Promise<IResponse<ILoginResponse>> {
+        const url = `${ROUTE}/register?fields=["$all"]`;
+        return (await axiosClient.post(url, body)).data;
+    },
     async info(): Promise<IResponse<IUser>> {
         const url = `${ROUTE}/info?fields=["$all"]`;
         const token = localStorage.getItem('accessToken');
