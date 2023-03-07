@@ -25,15 +25,30 @@ const playerService = {
     },
     async create(nation: IPlayer): Promise<IPlayer | undefined> {
         const url = `${ROUTE}?fields=["$all"]`;
-        return (await axiosClient.post(url, nation)).data;
+        const token = localStorage.getItem('accessToken');
+        return (await axiosClient.post(url, nation, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })).data;
     },
     async updateById(_id: string, updateNation: IPlayer): Promise<IResponse<IPlayer | undefined>> {
         const url = `${ROUTE}/${_id}?fields=["$all"]`;
-        return (await axiosClient.put(url, updateNation)).data;
+        const token = localStorage.getItem('accessToken');
+        return (await axiosClient.put(url, updateNation, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })).data;
     },
     async deleteById(_id: string): Promise<boolean> {
         const url = `${ROUTE}/${_id}?fields=["$all"]`;
-        return (await axiosClient.delete(url)).data;
+        const token = localStorage.getItem('accessToken');
+        return (await axiosClient.delete(url, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })).data;
     }
 };
 

@@ -24,7 +24,7 @@ const nationService = {
     },
     async deleteById(_id: string): Promise<boolean> {
         const url = `${ROUTE}/${_id}?fields=["$all"]`;
-        return (await axiosClient.delete(url)).data;
+        return (await axiosClient.delete(url,{headers:{Authorization : `bearer ${localStorage.getItem('accessToken')}`}})).data;
     }
 };
 

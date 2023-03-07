@@ -97,7 +97,7 @@ export default function Navbar(props: any) {
                             {user ?
                                 <div className="flex ">
                                     <div className="px-4 py-2 rounded-xl">
-                                        {user.name}
+                                        <Link to='/profile'>Profile</Link>
                                     </div>
                                     <button className="px-4 py-2 rounded-xl text-white m-0 bg-red-500 hover:bg-red-600 transition" onClick={handleLogout}>Logout</button>
                                 </div>
