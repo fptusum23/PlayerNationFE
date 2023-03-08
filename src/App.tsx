@@ -6,6 +6,7 @@ import ListUsers from './components/ListUsers';
 import { useState } from 'react';
 import { IUser } from './models/user';
 import Profile from './components/Profile';
+import ForgotPassword from './components/ForgotPassword';
 function App() {
   const [user, setUser] = useState<IUser | undefined>()
   const handleSetUser = (data: any) => {
@@ -22,6 +23,7 @@ function App() {
           <Route path="/nation" element={<ListNations user={user} />} />
           <Route path="/user" element={<ListUsers user={user} />} />
           <Route path="/profile" element={<Profile user={user} />} />
+          <Route path="/forgot-password" element={<ForgotPassword user={user} />} />
         </Routes>
       </div>
 

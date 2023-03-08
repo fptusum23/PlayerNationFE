@@ -46,7 +46,6 @@ const authService = {
     },
     async forgotPassword(body: IForgotPasswordRequest): Promise<IResponse<IUser>> {
         const url = `${ROUTE}/forgot_password?fields=["$all"]`;
-        const token = localStorage.getItem('accessToken');
         return (await axiosClient.post(url, body)).data;
     },
     async resetPassword(body: IResetPasswordRequest): Promise<IResponse<IUser>> {
