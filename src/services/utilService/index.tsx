@@ -9,8 +9,22 @@ const objectMap = (object: any, otherObject: any) => {
         }
     }
 }
+const serialize = (obj: any) => {
+    var str = [];
+    for (var p in obj)
+        if (obj.hasOwnProperty(p)) {
+            let name = encodeURIComponent(p);
+            let value = encodeURIComponent(obj[p])
+            if (typeof obj[p] == 'object') {
+                value = encodeURIComponent(JSON.stringify(obj[p]))
+            }
+            str.push(name + "=" + value);
+        }
+    return str.join("&");
+}
 
 export default {
+    serialize,
     objectMap,
     checkSamePath
 }

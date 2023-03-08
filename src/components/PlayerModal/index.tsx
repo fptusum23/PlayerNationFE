@@ -33,13 +33,7 @@ export default function PlayerModal(props: any) {
 
     const handleChange = (event: { target: { name: any; value: any; }; }) => {
         const name = `${event.target.name}`;
-
         const value = event.target.value;
-
-        console.log("name ===> ", {
-            name,
-            value
-        })
         setInputs((values: any) => ({ ...values, [name]: value }))
     }
 

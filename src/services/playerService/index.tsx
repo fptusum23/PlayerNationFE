@@ -14,9 +14,6 @@ const playerService = {
                 'x-requested-with': 'XMLHttpRequest',
             }
         })
-
-        console.log("headers ===> ", headers);
-
         return (await axiosClient.get(url)).data;
     },
     async getById(_id: string): Promise<IResponse<IPlayer | undefined>> {
