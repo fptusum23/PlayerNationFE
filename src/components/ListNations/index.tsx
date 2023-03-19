@@ -24,7 +24,11 @@ export default function ListNations(props: any) {
     setIdModal(null);
     setOpenModal(false);
     nationService
-      .getAll()
+      .getAll({
+        filter: { "name": { "$regex": valueFilter, "$options": "i" } },
+        page: paging.currentPage,
+        limit: 4
+      })
       .then((res: IResponsePaging<INation>) => {
         const { pagination, results: { objects: { rows, count } } } = res;
         setPaging({

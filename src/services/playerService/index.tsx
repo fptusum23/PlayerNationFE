@@ -2,18 +2,15 @@ import { IPlayer } from "../../models/player";
 import { IResponse } from "../../models/reponse";
 import { IResponsePaging } from "../../models/reponsePaging";
 import axiosClient from "../axiosClient";
+import utilService from "../utilService";
 
 const ROUTE = 'player';
 const playerService = {
-    async getAll(): Promise<IResponsePaging<IPlayer>> {
-        const url = `${ROUTE}?fields=["$all"]&populates=["nation"]`;
-        const { headers } = await axiosClient.get(url, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                'x-requested-with': 'XMLHttpRequest',
-            }
-        })
+    async getAll(object: any = {}): Promise<IResponsePaging<IPlayer>> {
+        object.fields = '["$all"]'
+        object.populates = '["nation"]'
+        const query = utilService.serialize(object)
+        const url = `${ROUTE}?${query}`;
         return (await axiosClient.get(url)).data;
     },
     async getById(_id: string): Promise<IResponse<IPlayer | undefined>> {
